@@ -24,3 +24,8 @@ def create_employee(request):
 def update_employee(request, pk):
     e = get_object_or_404(Employee, pk=pk)
     return render(request, 'payroll_app/update_employee.html', {"e":e})
+
+def delete_employee(request, pk):
+    e = get_object_or_404(Employee, pk=pk)
+    Employee.objects.filter(pk=pk).delete()
+    return redirect('home')
