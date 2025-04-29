@@ -12,10 +12,12 @@ def create_employee(request):
         idnum = request.POST.get('id_number')
         rate = request.POST.get('rate')
         allowance = request.POST.get('allowance')
-        if allowance:
+        if not Employee.objects.filter(id_number=idnum).exists() and allowance:
             Employee.objects.create(name=name, id_number=idnum, rate=rate, allowance=allowance)
-        else:
+        elif not Employee.objects.filter(id_number=idnum).exists():
             Employee.objects.create(name=name, id_number=idnum, rate=rate)
+        else:
+            return redirect('create_employee')
         return redirect('home')
     else:
         employee = Employee.objects.all()

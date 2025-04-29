@@ -3,7 +3,7 @@ from django.db import models
 # Create your models here.
 class Employee(models.Model):
     name = models.CharField(max_length=50)
-    id_number = models.CharField(max_length=20)
+    id_number = models.CharField(max_length=20, unique=True)
     rate = models.FloatField()
     overtime_pay = models.FloatField(null=True, blank=True)
     allowance = models.FloatField(null=True, blank=True)
