@@ -34,7 +34,10 @@
             <td>
               <a href="{% url 'update_employee' pk=e.pk %}" class="btn btn-primary">Update</a>
               <a href="{% url 'delete_employee' pk=e.pk %}" class="btn btn-danger">Delete</a>
-              <input type="text" class="form-control mt-2" placeholder="Overtime Hours" />
+              <form method="POST" action="">
+                {% csrf_token %}
+              <input type="number" class="form-control mt-2" min="0" placeholder="Overtime Hours" name="othours" id="othours" />
+              </form>
             </td>
             <td>
               <a href="" class="btn btn-success mt-5">Add Overtime</a>

@@ -25,7 +25,7 @@ class Employee(models.Model):
         return self.allowance
     
     def __str__(self):
-        return str(self.pk) + ": " + str(self.id_number) + ", " + str(self.rate) + ": " + str(self.rate)
+        return str(self.pk) + ": " + str(self.id_number) + ", " + "rate: " + str(self.rate)
     
 class Payslip(models.Model):
     id_number = models.ForeignKey(Employee, on_delete=models.CASCADE)
