@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from .models import Employee, Payslip
 
 # Create your views here.
@@ -12,9 +12,15 @@ def create_employee(request):
         idnum = request.POST.get('id_number')
         rate = request.POST.get('rate')
         allowance = request.POST.get('allowance')
-        Employee.objects.create(name=name, id_number=idnum, rate=rate, allowance=allowance)
+        if allowance:
+            Employee.objects.create(name=name, id_number=idnum, rate=rate, allowance=allowance)
+        else:
+            Employee.objects.create(name=name, id_number=idnum, rate=rate)
         return redirect('home')
     else:
         employee = Employee.objects.all()
         return render(request, 'payroll_app/create_employee.html', {'employee':employee})
-
+    
+def update_employee(request, pk):
+    e = get_object_or_404(Employee, pk=pk)
+    return render(request, 'payroll_app/update_employee.html', {"e":e})

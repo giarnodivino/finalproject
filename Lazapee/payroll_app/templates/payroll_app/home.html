@@ -48,7 +48,7 @@
                 <td>{{ e.allowance }}</td>
                 <td>{{ e.overtime_pay }}</td>
                 <td>
-                  <a href="" class="btn btn-primary">Update</a>
+                  <a href="{% url 'update_employee' pk=e.pk %}" class="btn btn-primary">Update</a>
                   <a href="" class="btn btn-danger">Delete</a>
                   <input type="text" class="form-control mt-2" placeholder="Overtime Hours" />
                 </td>

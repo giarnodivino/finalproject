@@ -1,0 +1,30 @@
+{% extends 'payroll_app/base.html' %} {% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  </head>
+  <body>
+    {% block content %}
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-4 offset-4 mt-5">
+          <div class="card">
+            <div class="card-header text-center" style="font-family: 'Gill Sans'">
+              <h1>Update Employee</h1>
+            </div>
+            <div class="card-body" style="font-family: 'Gill Sans'">
+              <h1>Name: {{ e.name }}</h1>
+              <h2>ID Number: {{ e.id_number }}</h2>
+              <h2>Rate: {{ e.rate }}</h2>
+              <h2>Allowance: {{ e.allowance }}</h2>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% endblock %}
+  </body>
+</html>
