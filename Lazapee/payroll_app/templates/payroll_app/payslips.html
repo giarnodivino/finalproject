@@ -1,0 +1,85 @@
+{% extends 'payroll_app/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="lazapee-heading">Payroll Creation</h2>
+
+    <form method="POST" action="{% url 'create_payslip' %}" class="mb-4">
+        {% csrf_token %}
+        <div class="form-row">
+            <div class="col-md-3">
+                <label>Payroll for:</label>
+                <select name="employee" class="form-control">
+                    <option value="all">All Employees</option>
+                    {% for emp in employee %}
+                        <option value="{{ emp.id_number }}">{{ emp.id_number }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label>Month:</label>
+                <select name="month" class="form-control">
+                    <option value="January">January</option>
+                    <option value="February">February</option>
+                    <option value="March">March</option>
+                    <option value="April">April</option>
+                    <option value="May">May</option>
+                    <option value="June">June</option>
+                    <option value="July">July</option>
+                    <option value="August">August</option>
+                    <option value="September">September</option>
+                    <option value="October">October</option>
+                    <option value="November">November</option>
+                    <option value="December">December</option>
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label>Year:</label>
+                <input type="text" name="year" class="form-control" required>
+            </div>
+            <div class="col-md-3">
+                <label>Cycle:</label>
+                <select name="cycle" class="form-control">
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                </select>
+            </div>
+        </div>
+        <button type="submit" class="btn btn-primary mt-3">Submit</button>
+    </form>
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-danger">{{ message }}</div>
+        {% endfor %}
+    {% endif %}
+
+    <h1 class="lazapee-heading">Payslips Summary</h2>
+
+    <table class="table table-striped">
+        <thead class="table-dark">
+            <tr>
+                <th>ID Number</th>
+                <th>Date</th>
+                <th>Cycle</th>
+                <th>Total Pay</th>
+                <th>Options</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for p in payslips %}
+            <tr>
+                <td>{{ p.getIDNumber }}</td>
+                <td>{{ p.getMonth }} {{ p.getDate_range }}, {{ p.getYear }}</td>
+                <td>{{ p.getPay_cycle }}</td>
+                <td>{{ p.getTotal_pay }}</td>
+                <td>
+                    <a href="" class="btn btn-info">View</a>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
