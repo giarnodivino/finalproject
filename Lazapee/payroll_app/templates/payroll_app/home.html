@@ -34,14 +34,14 @@
             <td>
               <a href="{% url 'update_employee' pk=e.pk %}" class="btn btn-primary">Update</a>
               <a href="{% url 'delete_employee' pk=e.pk %}" class="btn btn-danger">Delete</a>
-              <form method="POST" action="">
+              <form method="POST" action="{% url 'add_overtime' pk=e.pk %}">
                 {% csrf_token %}
               <input type="number" class="form-control mt-2" min="0" placeholder="Overtime Hours" name="othours" id="othours" />
-              </form>
             </td>
             <td>
-              <a href="" class="btn btn-success mt-5">Add Overtime</a>
+              <button type="submit" class="btn btn-success mt-5">Add Overtime</button>
             </td>
+          </form>
           </tr>
           {% endfor %}
         </tbody>

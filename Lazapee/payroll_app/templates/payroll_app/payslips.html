@@ -13,7 +13,7 @@
                 <select name="employee" class="form-control">
                     <option value="all">All Employees</option>
                     {% for emp in employee %}
-                        <option value="{{ emp.id_number }}">{{ emp.id_number }}</option>
+                        <option value="{{ emp.pk }}">{{ emp.id_number }}</option>
                     {% endfor %}
                 </select>
             </div>
@@ -70,7 +70,7 @@
         <tbody>
             {% for p in payslips %}
             <tr>
-                <td>{{ p.getIDNumber }}</td>
+                <td>{{ p.getIDNumber.id_number }}</td>
                 <td>{{ p.getMonth }} {{ p.getDate_range }}, {{ p.getYear }}</td>
                 <td>{{ p.getPay_cycle }}</td>
                 <td>{{ p.getTotal_pay }}</td>

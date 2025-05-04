@@ -7,6 +7,22 @@ def home(request):
     employee = Employee.objects.all()
     return render(request, 'payroll_app/home.html', {'employee':employee})
 
+def add_overtime(request, pk):
+    if(request.method=="POST"):
+        employee = get_object_or_404(Employee, pk=pk)
+        overtime_hours = request.POST.get('othours')
+
+        if overtime_hours:
+            overtime_hours = float(overtime_hours) 
+            employee.overtime_pay += (employee.rate/160 * 1.5 * overtime_hours)
+            print(overtime_hours)
+            employee.save() 
+
+        return redirect('home')  
+    else:
+        return redirect('home')
+    
+
 def create_employee(request):
     if(request.method=="POST"):
         name = request.POST.get('name')
@@ -33,48 +49,54 @@ def delete_employee(request, pk):
     Employee.objects.filter(pk=pk).delete()
     return redirect('home')
 
+
 def payslips(request):
     employee = Employee.objects.all()
     payslips = Payslip.objects.all().order_by('-year', '-month')
     return render(request, 'payroll_app/payslips.html', {'employee': employee, 'payslips': payslips})
 
 def create_payslip(request):
-    if request.method == 'POST':
-        employee_id = request.POST.get('employee')
+    if(request.method=="POST"):
+        payrollfor = request.POST.get('employee')
         month = request.POST.get('month')
         year = request.POST.get('year')
         cycle = int(request.POST.get('cycle'))
 
-        if employee_id == "all":
-            employee = Employee.objects.all()
-        else:
-            employee = employee = Employee.objects.filter(id_number=employee_id)
 
-        for emp in employee:
-            existing = Payslip.objects.filter(id_number=emp, month=month, year=year, pay_cycle=cycle)
-            if existing.exists():
-                messages.error(request, f"Payslip already exists for {emp.id_number} {month} Cycle {cycle}.")
+        if payrollfor == "all":
+            employees = Employee.objects.all()
+        else:
+            employees = Employee.objects.filter(pk=payrollfor)
+
+        for emp in employees:
+            # Check if payslip already exists
+            if Payslip.objects.filter(id_number=emp, month=month, year=year, pay_cycle=cycle).exists():
+                messages.error(request, f"Payslip already exists for {emp.name} ({emp.id_number}) in {month} cycle {cycle}.")
                 continue
 
-            rate = emp.rate
-            allowance = emp.allowance if emp.allowance else 0
-            overtime_pay = emp.overtime_pay if emp.overtime_pay else 0
+            rate = emp.rate or 0
+            allowance = emp.allowance or 0
+            overtime = emp.overtime_pay or 0
+            philhealth = 0
+            sss = 0
+            pag_ibig = 0
 
             if cycle == 1:
-                pag_ibig = 100
-                deductions_health = 0
-                sss = 0
-            else:
-                pag_ibig = 0
-                deductions_health = rate * 0.04
+                pag_ibig = (100)
+                tax = (rate/2 + allowance + overtime - pag_ibig)*0.2
+                total_pay = (rate/2 + allowance + overtime -pag_ibig) - tax
+            elif cycle == 2:
+                philhealth = rate * 0.04
                 sss = rate * 0.045
+                tax = (rate/2 + allowance + overtime - philhealth - sss)*0.2
+                total_pay = (rate/2 + allowance + overtime - philhealth - sss) - tax
+            else:
+                messages.error(request, f"Invalid cycle for {emp.name}.")
+                continue
 
-            cycle_rate = rate / 2
-            tax = cycle_rate * 0.2
-            total_pay = (cycle_rate + overtime_pay + allowance) - (tax + deductions_health + pag_ibig + sss)
 
             Payslip.objects.create(
-                id_number=employee_id,
+                id_number=emp,
                 month=month,
                 date_range="1-15" if cycle == 1 else "16-30",
                 year=year,
@@ -82,16 +104,17 @@ def create_payslip(request):
                 rate=rate,
                 earnings_allowance=allowance,
                 deductions_tax=tax,
-                deductions_health=deductions_health,
+                deductions_health=philhealth,
                 pag_ibig=pag_ibig,
                 sss=sss,
-                overtime=overtime_pay,
+                overtime=overtime,
                 total_pay=total_pay,
             )
 
+            # Reset overtime
             emp.overtime_pay = 0
             emp.save()
 
         return redirect('payslips')
-    else:
-        return redirect('payslips')
+
+    return redirect('payslips')
