@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import Employee, Payslip
+from .models import Employee, Payslip, Account
 from django.contrib import messages
 
 # Create your views here.
@@ -118,3 +118,40 @@ def create_payslip(request):
         return redirect('payslips')
 
     return redirect('payslips')
+
+userid = 0
+
+def login_page(request):
+    global userid
+    if(request.method=="POST"):
+        uname = request.POST.get('uname')
+        upass = request.POST.get('upass')
+        account = Account.objects.filter(username=uname, password=upass).first()
+
+        if account:
+            userid = account.id
+            print(userid)
+
+            return redirect('home')
+        else:
+            messages.warning(request, "Incorrect Username or Password")
+            return render(request, 'payroll_app/login_page.html')
+
+    return render(request, 'payroll_app/login_page.html')
+
+def signup_page(request):
+    global userid
+
+    if(request.method=="POST"):
+        uname = request.POST.get('uname')
+        upass = request.POST.get('upass')
+
+        if not Account.objects.filter(username=uname).exists():
+            Account.objects.create(username = uname, password = upass)
+            messages.success(request, "Successfully Created Account")
+            return redirect('login_page')
+        else:
+            messages.error(request, "Invalid: Account Already Exists")
+            return render(request, 'payroll_app/signup_page.html')
+
+    return render(request, 'payroll_app/signup_page.html')

@@ -1,0 +1,52 @@
+{% extends 'payroll_app/base.html' %}
+{% load static %}
+
+
+
+{% block navbar %}
+<nav class="navbar navbar-dark bg-custom mb-3 sticky-top" style="background-color: #9EC6F3;">
+    <div class="container-fluid">
+        <a class="navbar-brand mb-0" href="{% url 'login_page' %}"> Lazapee </a>
+        
+
+    </div>
+</nav>
+{% endblock %}
+
+{% block content %}
+<div class="col-md-8 offset-2">
+
+    <div class="card">
+        <div class="card-header">
+            <h5 class="card-title"> Login</h5>
+        </div>
+        <div class="card-body">
+
+            <form method="POST" action="{% url 'login_page' %}">{% csrf_token %}
+            
+                <div class="form-group">
+                    <label for="name"> Username </label>
+                    <input type="text" class="form-control" id="uname" name="uname">
+                </div>
+                <div class="form-group">
+                    <label for="name"> Password </label>
+                    <input type="password" class="form-control" id="upass" name="upass">
+                </div>
+
+                <button type="submit" class="mt-3 btn btn-primary">Login</button>
+            </form>                
+
+                <a href="{% url 'signup_page' %}" class="btn btn-secondary mt-4">Register</a>
+                    {% if messages %}
+                        <ul class="messages">
+                    {% for message in messages %}
+                        <li class="{% if message.tags %}{{ message.tags }}{% endif %}">{{ message }}</li>
+                    {% endfor %}
+                        </ul>
+                    {% endif %}
+            
+        </div>
+    </div>
+
+</div>
+{% endblock %}
