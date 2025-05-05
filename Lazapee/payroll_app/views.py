@@ -24,7 +24,10 @@ def add_overtime(request, pk):
 
         if overtime_hours:
             overtime_hours = float(overtime_hours) 
-            employee.overtime_pay += (employee.rate/160 * 1.5 * overtime_hours)
+            if employee.overtime_pay:
+                employee.overtime_pay += (employee.rate/160 * 1.5 * overtime_hours)
+            else:
+                employee.overtime_pay = (employee.rate/160 * 1.5 * overtime_hours)
             print(overtime_hours)
             employee.save() 
 
