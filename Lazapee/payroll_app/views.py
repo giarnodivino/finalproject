@@ -4,6 +4,8 @@ from django.contrib import messages
 
 
 userid = None
+grosspay = None
+totaldeduc = None
 
 
 def home(request):
@@ -193,3 +195,17 @@ def logout(request):
     global userid
     userid = None
     return redirect('login_page')
+
+def view_payslips(request,pk):
+    global userid, grosspay, totaldeduc
+
+    p = get_object_or_404(Payslip, pk=pk)
+    e = p.getIDNumber()
+    grosspay = (p.getCycleRate() + p.earnings_allowance + p.overtime)
+    if p.pay_cycle == 2:
+        totaldeduc = (p.deductions_tax + p.deductions_health + p.sss)
+        return render(request, 'payroll_app/viewslips.html', {'e': e, 'p': p, 'gp': grosspay,'td': totaldeduc})
+    
+    else:
+        totaldeduc = (p.deductions_tax + p.pag_ibig)
+        return render(request, 'payroll_app/viewslipsc1.html', {'e': e, 'p': p, 'gp': grosspay,'td': totaldeduc})

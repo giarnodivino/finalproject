@@ -75,7 +75,7 @@
                 <td>{{ p.getPay_cycle }}</td>
                 <td>{{ p.getTotal_pay }}</td>
                 <td>
-                    <a href="" class="btn btn-info">View</a>
+                    <a href="{% url 'viewslip' p.pk %}" class="btn btn-info">View</a>
                 </td>
             </tr>
         {% endfor %}
