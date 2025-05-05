@@ -53,6 +53,7 @@ def create_employee(request):
             employee = Employee.objects.all()
             return render(request, 'payroll_app/create_employee.html', {'employee':employee})
     else:
+        messages.error(request, f"Please Log in First")
         return redirect('login_page')
     
 def update_employee(request, pk):
