@@ -2,12 +2,22 @@ from django.shortcuts import render, redirect, get_object_or_404
 from .models import Employee, Payslip, Account
 from django.contrib import messages
 
-# Create your views here.
+
+userid = None
+
+
 def home(request):
-    employee = Employee.objects.all()
-    return render(request, 'payroll_app/home.html', {'employee':employee})
+    global userid
+
+    if userid:
+        employee = Employee.objects.all()
+        return render(request, 'payroll_app/home.html', {'employee':employee})
+    else:
+        messages.error(request, f"Please Log in First")
+        return redirect('login_page')
 
 def add_overtime(request, pk):
+    global userid
     if(request.method=="POST"):
         employee = get_object_or_404(Employee, pk=pk)
         overtime_hours = request.POST.get('othours')
@@ -24,38 +34,58 @@ def add_overtime(request, pk):
     
 
 def create_employee(request):
-    if(request.method=="POST"):
-        name = request.POST.get('name')
-        idnum = request.POST.get('id_number')
-        rate = request.POST.get('rate')
-        allowance = request.POST.get('allowance')
-        if not Employee.objects.filter(id_number=idnum).exists() and allowance:
-            Employee.objects.create(name=name, id_number=idnum, rate=rate, allowance=allowance)
-        elif not Employee.objects.filter(id_number=idnum).exists():
-            Employee.objects.create(name=name, id_number=idnum, rate=rate)
+    global userid
+
+    if userid:
+        if(request.method=="POST"):
+            name = request.POST.get('name')
+            idnum = request.POST.get('id_number')
+            rate = request.POST.get('rate')
+            allowance = request.POST.get('allowance')
+            if not Employee.objects.filter(id_number=idnum).exists() and allowance:
+                Employee.objects.create(name=name, id_number=idnum, rate=rate, allowance=allowance)
+            elif not Employee.objects.filter(id_number=idnum).exists():
+                Employee.objects.create(name=name, id_number=idnum, rate=rate)
+            else:
+                return redirect('create_employee')
+            return redirect('home')
         else:
-            return redirect('create_employee')
-        return redirect('home')
+            employee = Employee.objects.all()
+            return render(request, 'payroll_app/create_employee.html', {'employee':employee})
     else:
-        employee = Employee.objects.all()
-        return render(request, 'payroll_app/create_employee.html', {'employee':employee})
+        return redirect('login_page')
     
 def update_employee(request, pk):
-    e = get_object_or_404(Employee, pk=pk)
-    return render(request, 'payroll_app/update_employee.html', {"e":e})
+    global userid
+
+    if userid:
+        e = get_object_or_404(Employee, pk=pk)
+        return render(request, 'payroll_app/update_employee.html', {"e":e})
+    else:
+        messages.error(request, f"Please Log in First")
+        return redirect('login_page')
 
 def delete_employee(request, pk):
+    global userid
     e = get_object_or_404(Employee, pk=pk)
     Employee.objects.filter(pk=pk).delete()
     return redirect('home')
 
 
 def payslips(request):
-    employee = Employee.objects.all()
-    payslips = Payslip.objects.all().order_by('-year', '-month')
-    return render(request, 'payroll_app/payslips.html', {'employee': employee, 'payslips': payslips})
+    global userid
+
+    if userid:
+        employee = Employee.objects.all()
+        payslips = Payslip.objects.all().order_by('-year', '-month')
+        return render(request, 'payroll_app/payslips.html', {'employee': employee, 'payslips': payslips})
+    else:
+        messages.error(request, f"Please Log in First")
+        return redirect('login_page')
 
 def create_payslip(request):
+    global userid
+    
     if(request.method=="POST"):
         payrollfor = request.POST.get('employee')
         month = request.POST.get('month')
@@ -119,7 +149,6 @@ def create_payslip(request):
 
     return redirect('payslips')
 
-userid = 0
 
 def login_page(request):
     global userid
@@ -155,3 +184,8 @@ def signup_page(request):
             return render(request, 'payroll_app/signup_page.html')
 
     return render(request, 'payroll_app/signup_page.html')
+
+def logout(request):
+    global userid
+    userid = None
+    return redirect('login_page')
