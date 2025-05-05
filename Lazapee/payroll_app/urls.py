@@ -13,5 +13,6 @@ urlpatterns = [
     path('add_overtime/<int:pk>/', views.add_overtime, name='add_overtime'),
     path('', views.login_page, name='login_page'),
     path('signup_page', views.signup_page, name='signup_page'),
-    path('logout', views.logout, name='logout')
+    path('logout', views.logout, name='logout'),
+    path('viewslip/<int:pk>/', views.view_payslips, name='viewslip'),
 ]

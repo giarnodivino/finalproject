@@ -1,0 +1,148 @@
+{% extends 'payroll_app/base.html' %} {% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  </head>
+  <body>
+    {% block content %}
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-8 offset-2">
+        <div class="card mt-3">
+            <div class="card-body" style="font-family: 'Helvetica'">
+            <div class="row">
+                <div class="col-12">
+                    <div class="border-bottom">
+                        <div class="row">
+                            <div class="col-6">
+                                <h5>Name: {{ e.name }}</h5>
+                                <h5>ID Number: {{ e.id_number }}</h5>
+                                <br>
+                                <div class="row">
+                                    <div class="col">
+                                        <h6><b>EARNINGS:</b></h6>
+                                        <br>
+                                        <h6>Base Pay</h6>
+                                        <h6>Allowances</h6>
+                                        <h6>Overtime</h6>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <h5>Date: {{ p.month }} {{ p.date_range }}, {{ p.year }}</h5>
+                                <h5>Payslip ID: {{ p.pk }}</h5>
+                                <br>
+                                <div class="row">
+                                    <div class="col">
+                                        <h6 class="text-center"><b>AMOUNT</b></h6>
+                                        <br>
+                                        <h6>{{ p.getCycleRate }}</h6>
+                                        <h6>{{ p.earnings_allowance }}</h6>
+                                        <h6>{{ p.overtime }}</h6>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12">
+                    <div class="border-bottom">
+                        <div class="row">
+                            <div class="col-6">
+                                <div class="row">
+                                    <div class="col">
+                                        <br>
+                                        <h6>Gross Pay</h6>
+                                        <br>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="row">
+                                    <div class="col">
+                                        <br>
+                                        <h6 class="text-center">{{ gp }}</h6>
+                                        <br>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <br>
+            <div class="row">
+                <div class="col-12">
+                    <div class="border-bottom">
+                        <div class="row">
+                            <div class="col-6">
+                                <div class="row">
+                                    <div class="col">
+                                        <h6><b>DEDUCTIONS:</b></h6>
+                                        <h6>W/ Holding Tax</h6>
+                                        <h6>Philhealth</h6>
+                                        <h6>SSS</h6>
+                                        <br>
+                                        <h6>Total Deductions</h6>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="row">
+                                    <div class="col">
+                                        <br>
+                                        <h6>{{ p.deductions_tax }}</h6>
+                                        <h6>{{ p.deductions_health }}</h6>
+                                        <h6>{{ p.sss }}</h6>
+                                        <div class="border-bottom"></div>
+                                        <br>
+                                        <h6 class="text-center">{{ td }}</h6>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12">
+                    <div class="border-bottom">
+                        <div class="row">
+                            <div class="col-6">
+                                <div class="row">
+                                    <div class="col">
+                                        <br>
+                                        <h5><b>Net Pay</b></h5>
+                                        <br>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="row">
+                                    <div class="col">
+                                        <br>
+                                        <h5 class="text-center"><b>{{ p.total_pay }}</b></h5>
+                                        <br>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% endblock %}
+  </body>
+</html>
