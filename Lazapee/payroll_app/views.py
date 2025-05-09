@@ -30,7 +30,6 @@ def add_overtime(request, pk):
                 employee.overtime_pay += (employee.rate/160 * 1.5 * overtime_hours)
             else:
                 employee.overtime_pay = (employee.rate/160 * 1.5 * overtime_hours)
-            print(overtime_hours)
             employee.save() 
 
         return redirect('home')  
@@ -105,7 +104,6 @@ def create_payslip(request):
             employees = Employee.objects.filter(pk=payrollfor)
 
         for emp in employees:
-            # Check if payslip already exists
             if Payslip.objects.filter(id_number=emp, month=month, year=year, pay_cycle=cycle).exists():
                 messages.error(request, f"Payslip already exists for {emp.name} ({emp.id_number}) in {month} cycle {cycle}.")
                 continue
@@ -118,7 +116,7 @@ def create_payslip(request):
             pag_ibig = 0
 
             if cycle == 1:
-                pag_ibig = (100)
+                pag_ibig = 100
                 tax = (rate/2 + allowance + overtime - pag_ibig)*0.2
                 total_pay = (rate/2 + allowance + overtime -pag_ibig) - tax
             elif cycle == 2:
@@ -165,8 +163,6 @@ def login_page(request):
 
         if account:
             userid = account.id
-            print(userid)
-
             return redirect('home')
         else:
             messages.warning(request, "Incorrect Username or Password")
@@ -175,7 +171,7 @@ def login_page(request):
     return render(request, 'payroll_app/login_page.html')
 
 def signup_page(request):
-    global userid
+
 
     if(request.method=="POST"):
         uname = request.POST.get('uname')
