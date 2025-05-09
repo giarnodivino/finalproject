@@ -65,6 +65,20 @@ def update_employee(request, pk):
 
     if userid:
         e = get_object_or_404(Employee, pk=pk)
+
+        if(request.method=="POST"):
+            name = request.POST.get('name')
+            idnum = request.POST.get('id_number')
+            rate = request.POST.get('rate')
+            allowance = request.POST.get('allowance')
+            
+            e.name = name
+            e.id_number = idnum
+            e.rate = float(rate) if rate else 0
+            e.allowance = float(allowance) if allowance else 0
+            e.save()
+
+            return redirect('home')
         return render(request, 'payroll_app/update_employee.html', {"e":e})
     else:
         messages.error(request, f"Please Log in First")
@@ -145,7 +159,7 @@ def create_payslip(request):
                 total_pay=total_pay,
             )
 
-            # Reset overtime
+
             emp.overtime_pay = 0
             emp.save()
 
@@ -195,13 +209,18 @@ def logout(request):
 def view_payslips(request,pk):
     global userid, grosspay, totaldeduc
 
-    p = get_object_or_404(Payslip, pk=pk)
-    e = p.getIDNumber()
-    grosspay = (p.getCycleRate() + p.earnings_allowance + p.overtime)
-    if p.pay_cycle == 2:
-        totaldeduc = (p.deductions_tax + p.deductions_health + p.sss)
-        return render(request, 'payroll_app/viewslips.html', {'e': e, 'p': p, 'gp': grosspay,'td': totaldeduc})
-    
+
+    if userid:
+        p = get_object_or_404(Payslip, pk=pk)
+        e = p.getIDNumber()
+        grosspay = (p.getCycleRate() + p.earnings_allowance + p.overtime)
+        if p.pay_cycle == 2:
+            totaldeduc = (p.deductions_tax + p.deductions_health + p.sss)
+            return render(request, 'payroll_app/viewslips.html', {'e': e, 'p': p, 'gp': grosspay,'td': totaldeduc})
+        
+        else:
+            totaldeduc = (p.deductions_tax + p.pag_ibig)
+            return render(request, 'payroll_app/viewslipsc1.html', {'e': e, 'p': p, 'gp': grosspay,'td': totaldeduc})
     else:
-        totaldeduc = (p.deductions_tax + p.pag_ibig)
-        return render(request, 'payroll_app/viewslipsc1.html', {'e': e, 'p': p, 'gp': grosspay,'td': totaldeduc})
+        messages.error(request, f"Please Log in First")
+        return redirect('login_page')

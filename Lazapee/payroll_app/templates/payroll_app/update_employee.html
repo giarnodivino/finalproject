@@ -22,6 +22,33 @@
               <h2>Allowance: {{ e.allowance }}</h2>
             </div>
           </div>
+          <div class="card mt-3">
+            <div class="card-header text-center" style="font-family: 'Gill Sans'">
+              <h1>Update Details</h1>
+            </div>
+            <div class="card-body">
+              <form method="POST" action="{% url 'update_employee' pk=e.pk %}">
+                {% csrf_token %}
+                <div class="form-group">
+                  <label for="name">Name:</label>
+                  <input type="text" class="form-control" id="name" name="name" required />
+                </div>
+                <div class="form-group">
+                  <label for="id_number">ID Number</label>
+                  <input type="number" class="form-control" id="id_number" name="id_number" required />
+                </div>
+                <div class="form-group">
+                  <label for="rate">Rate</label>
+                  <input type="number" class="form-control" id="rate" name="rate" required />
+                </div>
+                <div class="form-group">
+                  <label for="allowance">Allowance (Optional)</label>
+                  <input type="number" class="form-control" id="allowance" name="allowance" />
+                </div>
+                <button type="submit" class="btn btn-primary">Submit</button>
+              </form>
+            </div>
+          </div>
         </div>
       </div>
     </div>
